@@ -1,7 +1,7 @@
 #include "../include/tree.h"
 #include "../include/akinator.h"
 
-void printMenu(treeNode_t *root);
+void printMenu(treeNode_t **root);
 treeNode_t *searchElement(treeNode_t *node);
 
 int main()
@@ -13,14 +13,9 @@ int main()
 
     treeNode_t *root = NULL;
 
-    if ((root = loadTree("sixseven.txt", root)) == NULL)
-    {
-        fprintf(stderr, "ERROR: can't load tree\n");
+    drawWindow();
 
-        return 1;
-    }
-
-    printMenu(root);
+    printMenu(&root);
 
     treeDump(root);
 
@@ -31,7 +26,7 @@ int main()
     return 0;
 }
 
-void printMenu(treeNode_t *root)
+void printMenu(treeNode_t **root)
 {
     bool flag = 1;
     char callNumber = 0;
@@ -58,9 +53,9 @@ void printMenu(treeNode_t *root)
             case '0':
             {
                 while (getchar() != '\n');
-                if ((currentNode = searchElement(root)) == NULL)
+                if ((currentNode = searchElement(*root)) == NULL)
                 {
-
+                    return;
                 }
 
                 printf("\033[34mDid you search %s? (y/n)\033[0m\n", currentNode->data);
@@ -86,11 +81,13 @@ void printMenu(treeNode_t *root)
                         char question[256] = {};
 
                         printf("\033[34mWhat was it?\033[0m\n");
-                        scanf("%255s", newItem);
+                        scanf("%255[^\n]", newItem);
+
+                        while (getchar() != '\n');
 
                         printf("\033[34mWhat is the difference between %s and %s? (Yes for %s)\033[0m\n",
-                               currentNode->data, newItem, currentNode->data);
-                        scanf("%255s", question);
+                               currentNode->data, newItem, newItem);
+                        scanf("%255[^\n]", question);
 
                         if (addToLeft(currentNode, newItem) == NULL)
                         {
@@ -130,9 +127,28 @@ void printMenu(treeNode_t *root)
                     return;
                 }
 
-                treePrint(root, fileName, filePointerWrite);
+                treePrint(*root, filePointerWrite);
 
                 closeFile(&filePointerWrite);
+
+
+            }
+
+                break;
+
+            case '2':
+            {
+                printf("\033[34mFile name to open:\033[0m\n");
+
+                char fileName[MAX_FILE_LEN] = {};
+                scanf("%s", fileName);
+
+                if ((*root = loadTree(fileName, *root)) == NULL)
+                {
+                    fprintf(stderr, "ERROR: can't load tree\n");
+
+                    return;
+                }
             }
 
                 break;
@@ -171,13 +187,13 @@ treeNode_t *searchElement(treeNode_t *node)
         {
             while (getchar() != '\n');
 
-            return node->left? searchElement(node->left) : searchElement(node);
+            return node->left ? searchElement(node->left) : searchElement(node);
         }
         else if (answer == 'n')
         {
             while (getchar() != '\n');
 
-            return node->right? searchElement(node->right) : searchElement(node);
+            return node->right ? searchElement(node->right) : searchElement(node);
         }
         else
         {

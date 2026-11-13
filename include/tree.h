@@ -8,8 +8,9 @@ typedef char * treeElem_t;
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
-#include "../include/logger.h"
-#include "../include/treeVerify.h"
+#include "logger.h"
+#include "treeVerify.h"
+#include "graphicAkinator.h"
 
 const int MAX_FILE_LEN = 100;
 
@@ -29,9 +30,9 @@ void destroyTree         (treeNode_t *root);
 treeNode_t * nodeGoLeft  (treeNode_t *node);
 treeNode_t * nodeGoRight (treeNode_t *node);
 treeNode_t * nodeGoUp    (treeNode_t *node);
-void treePrint           (treeNode_t *root, const char *fileName, FILE *filePointer);
+void treePrint           (treeNode_t *root, FILE *filePointer);
 void nodePrint           (treeNode_t *root, FILE *filePointer);
-void singleNodeDump      (treeNode_t *root, int depth, FILE *filePointer);
+void singleNodeDump      (treeNode_t *root, int depth, FILE *filePointer); //TODO - сделать закрытие реализации, то есть перенести объявление в cpp и сделать static
 void treeDump            (treeNode_t *node);
 
 #endif

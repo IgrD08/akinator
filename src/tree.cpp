@@ -1,5 +1,5 @@
 #include "../include/tree.h"
-
+//MENTOR - add asserts
 treeNode_t *createNode(treeNode_t *parent, treeElem_t value)
 {
     treeNode_t *newNode = (treeNode_t *)calloc(1, sizeof(treeNode_t));
@@ -88,7 +88,7 @@ void destroyTree(treeNode_t *root)
     return;
 }
 
-void treePrint(treeNode_t *root, const char *fileName, FILE *filePointer)
+void treePrint(treeNode_t *root, FILE *filePointer)
 {
     nodePrint(root, filePointer);
 
@@ -170,6 +170,13 @@ void treeDump(treeNode_t *node)
 
 void singleNodeDump(treeNode_t *node, int depth, FILE *filePointer)
 {
+    if (node == NULL)
+    {
+        fprintf(stderr, "ERROR: can't draw node\n");
+
+        return;
+    }
+
     fprintf(filePointer, "\tnode%p[style = filled, label = \"{value = " SPEC " | address = %p |  parent = %p | { left = %p | right = %p }}\", fillcolor = \"#95ff72\", color = \"#259200\"];\n",
             node, node->data, node, node->parent, node->left, node->right);
 
