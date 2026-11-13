@@ -88,16 +88,11 @@ void destroyTree(treeNode_t *root)
     return;
 }
 
-
-void treePrint(treeNode_t *root, const char *fileName)
+void treePrint(treeNode_t *root, const char *fileName, FILE *filePointer)
 {
-    FILE *filePointer = fopen(fileName, "w");
-
     nodePrint(root, filePointer);
 
     fprintf(filePointer, "\n");
-
-    fclose(filePointer);
 
     return;
 }

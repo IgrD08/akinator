@@ -4,26 +4,48 @@ treeNode_t *loadTree(const char *fileName, treeNode_t *currentNode)
 {
     FILE *filePointer = NULL;
 
-    filePointer = fopen(fileName, "r");
-
-    char *treeBuffer = NULL;
+    if (fileOpening(&filePointer, fileName, "r") == 1)
+    {
+        return NULL;
+    }
 
     struct stat fileInfo;
     if (stat(fileName, &fileInfo) == -1)
         return NULL;
 
+    char *treeBuffer = NULL;
     if ((treeBuffer = (char *)(calloc((size_t)fileInfo.st_size + 1, sizeof(char)))) == NULL)
+    {
+        fprintf(stderr, "ERROR: allocation error\n");
+
         return NULL;
+    }
 
-    fread(treeBuffer, sizeof(char), (size_t)fileInfo.st_size, filePointer);
+    if (fread(treeBuffer, sizeof(char), (size_t)fileInfo.st_size, filePointer) < (size_t)fileInfo.st_size)
+    {
+        fprintf(stderr, "ERROR: incorrect reading from file\n");
 
-    fclose(filePointer);
+        return NULL;
+    }
 
-    char *string = (char *)calloc(256 + 1, sizeof(char)); // 1 for \0
+    closeFile(&filePointer);
+
+    char *string = NULL;
+    if ((string = (char *)calloc(256 + 1, sizeof(char))) == NULL) // 1 for \0
+    {
+        fprintf(stderr, "ERROR: allocation error\n");
+
+        return NULL;
+    }
 
     size_t index = 1;
+    treeNode_t *root = NULL;
+    if ((root = loadNode(treeBuffer, currentNode, NULL, &index, string)) == NULL)
+    {
+        fprintf(stderr, "ERROR: can't load node: %p\n", currentNode);
 
-    treeNode_t *root = loadNode(treeBuffer, currentNode, NULL, &index, string);
+        return NULL;
+    }
 
     free(treeBuffer);
     free(string);
@@ -33,7 +55,12 @@ treeNode_t *loadTree(const char *fileName, treeNode_t *currentNode)
 
 treeNode_t *loadNode(char *treeBuffer, treeNode_t *currentNode, treeNode_t *parent, size_t *index, char *string)
 {
-    sscanf(&treeBuffer[*index], "%256[^()]", string);
+    if (sscanf(&treeBuffer[*index], "%256[^()]", string) == -1)
+    {
+        fprintf(stderr, "ERROR: incorrect reading from buffer\n");
+
+        return NULL;
+    }
 
     *index += strlen(string);
 

@@ -4,13 +4,21 @@
 void printMenu(treeNode_t *root);
 treeNode_t *searchElement(treeNode_t *node);
 
-int main(int argc, char *argv[])
+int main()
 {
-    logFile = fopen("logs/graphDumpHtml.htm", "w");
+    if (fileOpening(&logFile, "logs/graphDumpHtml.htm", "w") == 1)
+    {
+        return 1;
+    }
 
     treeNode_t *root = NULL;
 
-    root = loadTree("sixseven.txt", root);
+    if ((root = loadTree("sixseven.txt", root)) == NULL)
+    {
+        fprintf(stderr, "ERROR: can't load tree\n");
+
+        return 1;
+    }
 
     printMenu(root);
 
@@ -18,7 +26,7 @@ int main(int argc, char *argv[])
 
     destroyTree(root);
 
-    fclose(logFile);
+    closeFile(&logFile);
 
     return 0;
 }
@@ -28,12 +36,14 @@ void printMenu(treeNode_t *root)
     bool flag = 1;
     char callNumber = 0;
     treeNode_t *currentNode = NULL;
+    FILE *filePointerWrite = NULL;
 
     do
     {
         printf("\033[34mAkinator\n"
                "0 - start searching\n"
-               "1 - add new item\n"
+               "1 - save database\n"
+               "2 - open database\n"
                "q - exit\033[0m\n"
               );
 
@@ -48,7 +58,10 @@ void printMenu(treeNode_t *root)
             case '0':
             {
                 while (getchar() != '\n');
-                currentNode = searchElement(root);
+                if ((currentNode = searchElement(root)) == NULL)
+                {
+
+                }
 
                 printf("\033[34mDid you search %s? (y/n)\033[0m\n", currentNode->data);
 
@@ -75,18 +88,30 @@ void printMenu(treeNode_t *root)
                         printf("\033[34mWhat was it?\033[0m\n");
                         scanf("%255s", newItem);
 
-                        printf("\033[34mWhat is the difference between %s and %s? (Yes for %s)\033[0m\n", currentNode->data, newItem, currentNode->data);
+                        printf("\033[34mWhat is the difference between %s and %s? (Yes for %s)\033[0m\n",
+                               currentNode->data, newItem, currentNode->data);
                         scanf("%255s", question);
 
-                        addToLeft(currentNode, newItem);
-                        addToRight(currentNode, currentNode->data);
+                        if (addToLeft(currentNode, newItem) == NULL)
+                        {
+                            fprintf(stderr, "ERROR: can't add element to left\n");
+
+                            return;
+                        }
+
+                        if (addToRight(currentNode, currentNode->data) == NULL)
+                        {
+                            fprintf(stderr, "ERROR: can't add element to right\n");
+
+                            return;
+                        }
 
                         free(currentNode->data);
                         currentNode->data = strdup(question);
                     }
                     else if (answer == 'n')
                     {
-                        break;
+                        continue;
                     }
                 }
             }
@@ -95,7 +120,19 @@ void printMenu(treeNode_t *root)
 
             case '1':
             {
+                printf("\033[34mFile name to open:\033[0m\n");
 
+                char fileName[MAX_FILE_LEN] = {};
+                scanf("%s", fileName);
+
+                if (fileOpening(&filePointerWrite, fileName, "w") == 1)
+                {
+                    return;
+                }
+
+                treePrint(root, fileName, filePointerWrite);
+
+                closeFile(&filePointerWrite);
             }
 
                 break;

@@ -9,6 +9,9 @@ typedef char * treeElem_t;
 #include <string.h>
 #include <time.h>
 #include "../include/logger.h"
+#include "../include/treeVerify.h"
+
+const int MAX_FILE_LEN = 100;
 
 struct treeNode_t
 {
@@ -16,12 +19,6 @@ struct treeNode_t
     treeNode_t *left;
     treeNode_t *right;
     treeNode_t *parent;
-};
-
-enum returnStatus_t
-{
-    CORRECT_STATUS = 0,
-    STATUS_ERROR   = 1
 };
 
 treeNode_t * createNode  (treeNode_t *parent, treeElem_t value);
@@ -32,7 +29,7 @@ void destroyTree         (treeNode_t *root);
 treeNode_t * nodeGoLeft  (treeNode_t *node);
 treeNode_t * nodeGoRight (treeNode_t *node);
 treeNode_t * nodeGoUp    (treeNode_t *node);
-void treePrint           (treeNode_t *root, const char *fileName);
+void treePrint           (treeNode_t *root, const char *fileName, FILE *filePointer);
 void nodePrint           (treeNode_t *root, FILE *filePointer);
 void singleNodeDump      (treeNode_t *root, int depth, FILE *filePointer);
 void treeDump            (treeNode_t *node);
