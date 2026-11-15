@@ -1,5 +1,7 @@
 #include "../include/akinator.h"
 
+static treeNode_t *loadNode(char *treeBuffer, treeNode_t *currentNode, treeNode_t *parent, size_t *index, char *string);
+
 treeNode_t *loadTree(const char *fileName, treeNode_t *currentNode)
 {
     FILE *filePointer = NULL;
@@ -31,7 +33,7 @@ treeNode_t *loadTree(const char *fileName, treeNode_t *currentNode)
     closeFile(&filePointer);
 
     char *string = NULL;
-    if ((string = (char *)calloc(256 + 1, sizeof(char))) == NULL) // 1 for \0
+    if ((string = (char *)calloc(256 + 1, sizeof(char))) == NULL) //NOTE - 1 for \0
     {
         fprintf(stderr, "ERROR: allocation error\n");
 

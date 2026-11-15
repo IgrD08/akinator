@@ -1,8 +1,10 @@
 #include "../include/tree.h"
 #include "../include/akinator.h"
 
-void printMenu(treeNode_t **root);
-treeNode_t *searchElement(treeNode_t *node);
+static void printMenu(treeNode_t **root);
+static treeNode_t *searchElement(treeNode_t *node);
+static void saveDataToFile(treeNode_t **root);
+static void loadDataFromFile(treeNode_t **root);
 
 int main()
 {
@@ -12,8 +14,6 @@ int main()
     }
 
     treeNode_t *root = NULL;
-
-    drawWindow();
 
     printMenu(&root);
 
@@ -31,7 +31,6 @@ void printMenu(treeNode_t **root)
     bool flag = 1;
     char callNumber = 0;
     treeNode_t *currentNode = NULL;
-    FILE *filePointerWrite = NULL;
 
     do
     {
@@ -116,40 +115,14 @@ void printMenu(treeNode_t **root)
                 break;
 
             case '1':
-            {
-                printf("\033[34mFile name to open:\033[0m\n");
 
-                char fileName[MAX_FILE_LEN] = {};
-                scanf("%s", fileName);
-
-                if (fileOpening(&filePointerWrite, fileName, "w") == 1)
-                {
-                    return;
-                }
-
-                treePrint(*root, filePointerWrite);
-
-                closeFile(&filePointerWrite);
-
-
-            }
+                saveDataToFile(root);
 
                 break;
 
             case '2':
-            {
-                printf("\033[34mFile name to open:\033[0m\n");
 
-                char fileName[MAX_FILE_LEN] = {};
-                scanf("%s", fileName);
-
-                if ((*root = loadTree(fileName, *root)) == NULL)
-                {
-                    fprintf(stderr, "ERROR: can't load tree\n");
-
-                    return;
-                }
-            }
+                loadDataFromFile(root);
 
                 break;
 
@@ -204,4 +177,33 @@ treeNode_t *searchElement(treeNode_t *node)
     }
 
     return node;
+}
+
+void saveDataToFile(treeNode_t **root)
+{
+    printf("\033[34mFile name to open:\033[0m\n");
+
+    char fileName[MAX_FILE_LEN] = {};
+    scanf("%s", fileName);
+
+    treePrint(*root, fileName);
+
+    return;
+}
+
+void loadDataFromFile(treeNode_t **root)
+{
+    printf("\033[34mFile name to open:\033[0m\n");
+
+    char fileName[MAX_FILE_LEN] = {};
+    scanf("%s", fileName);
+
+    if ((*root = loadTree(fileName, *root)) == NULL)
+    {
+        fprintf(stderr, "ERROR: can't load tree\n");
+
+        return;
+    }
+
+    return;
 }

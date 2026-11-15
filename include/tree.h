@@ -30,9 +30,7 @@ void destroyTree         (treeNode_t *root);
 treeNode_t * nodeGoLeft  (treeNode_t *node);
 treeNode_t * nodeGoRight (treeNode_t *node);
 treeNode_t * nodeGoUp    (treeNode_t *node);
-void treePrint           (treeNode_t *root, FILE *filePointer);
-void nodePrint           (treeNode_t *root, FILE *filePointer);
-void singleNodeDump      (treeNode_t *root, int depth, FILE *filePointer); //TODO - сделать закрытие реализации, то есть перенести объявление в cpp и сделать static
+treeNode_t *treePrint           (treeNode_t *root, const char *fileName);
 void treeDump            (treeNode_t *node);
 
 #endif

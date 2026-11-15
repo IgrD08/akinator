@@ -1,5 +1,8 @@
 #include "../include/tree.h"
 //MENTOR - add asserts
+static void nodePrint           (treeNode_t *root, FILE *filePointer);
+static void singleNodeDump(treeNode_t *root, int depth, FILE *filePointer);
+
 treeNode_t *createNode(treeNode_t *parent, treeElem_t value)
 {
     treeNode_t *newNode = (treeNode_t *)calloc(1, sizeof(treeNode_t));
@@ -15,7 +18,7 @@ treeNode_t *createNode(treeNode_t *parent, treeElem_t value)
 
     newNode->parent = parent;
 
-    fprintf(logFile, "Tree after adding " SPEC " after %p:\n", newNode->data, newNode->parent);
+    // fprintf(logFile, "Tree after adding " SPEC " after %p:\n", newNode->data, newNode->parent);
 
     return newNode;
 }
@@ -88,13 +91,22 @@ void destroyTree(treeNode_t *root)
     return;
 }
 
-void treePrint(treeNode_t *root, FILE *filePointer)
+treeNode_t *treePrint(treeNode_t *root, const char *fileName)
 {
-    nodePrint(root, filePointer);
+    FILE *filePointerWrite = NULL;
 
-    fprintf(filePointer, "\n");
+    if (fileOpening(&filePointerWrite, fileName, "w") == 1)
+    {
+        return NULL;
+    }
 
-    return;
+    nodePrint(root, filePointerWrite);
+
+    fprintf(filePointerWrite, "\n");
+
+    closeFile(&filePointerWrite);
+
+    return root;
 }
 
 void nodePrint(treeNode_t *root, FILE *filePointer)
