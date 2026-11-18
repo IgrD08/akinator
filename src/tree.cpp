@@ -1,7 +1,7 @@
 #include "../include/tree.h"
-//MENTOR - add asserts
-static void nodePrint           (treeNode_t *root, FILE *filePointer);
-static void singleNodeDump(treeNode_t *root, int depth, FILE *filePointer);
+
+static void nodePrint      (treeNode_t *root, FILE *filePointer);
+static void singleNodeDump (treeNode_t *root, int depth, FILE *filePointer);
 
 treeNode_t *createNode(treeNode_t *parent, treeElem_t value)
 {
@@ -18,7 +18,8 @@ treeNode_t *createNode(treeNode_t *parent, treeElem_t value)
 
     newNode->parent = parent;
 
-    // fprintf(logFile, "Tree after adding " SPEC " after %p:\n", newNode->data, newNode->parent);
+    if (newNode->data)
+        LOG("Tree after adding " SPEC " after %p:\n", newNode->data, newNode->parent);
 
     return newNode;
 }

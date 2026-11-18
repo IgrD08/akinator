@@ -9,10 +9,10 @@ typedef char * treeElem_t;
 #include <string.h>
 #include <time.h>
 #include "logger.h"
-#include "treeVerify.h"
+#include "fileUtility.h"
 #include "graphicAkinator.h"
 
-const int MAX_FILE_LEN = 100;
+const int MAX_FILE_LEN = 256;
 
 struct treeNode_t
 {

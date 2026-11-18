@@ -2,6 +2,7 @@
 #define GRAPHIC_AKINATOR_H
 
 #include <stdio.h>
+#include <string.h>
 #include <raylib.h>
 
 const int SCREEN_WIDTH  = 1000;
@@ -30,11 +31,14 @@ enum menuButtonsLocation
 
 enum state_t
 {
-    MENU_STATE = 0,
-    GAME_STATE = 1,
-    SAVE_STATE = 2,
-    LOAD_STATE = 3,
-    QUIT_STATE = 4
+    MENU_STATE         = 0,
+    ASKING_STATE       = 1,
+    GUESSING_STATE     = 2,
+    INPUT_WHO_STATE    = 3,
+    INPUT_DIFF_STATE   = 4,
+    SAVE_STATE         = 5,
+    LOAD_STATE         = 6,
+    QUIT_STATE         = 7
 };
 
 struct button_t
@@ -51,11 +55,11 @@ struct menuButtonsCoordinates_t
     button_t quit;
 };
 
-void drawWindow              (void);
 void yesNoButtonsDraw        (void);
 void menuButtonsDraw         (void);
 bool pressDetection          (button_t button);
 state_t checkMenuButtonPress (menuButtonsCoordinates_t menuButtons);
 int inputBox                 (char inputData[MAX_CHARS], int *letterCount);
+void cleanData               (char *string, int *number);
 
 #endif

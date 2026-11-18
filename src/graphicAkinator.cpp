@@ -30,15 +30,23 @@ bool pressDetection(button_t button)
 {
     Vector2 pos = GetMousePosition();
 
-    if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT) && pos.x >= button.top.x && pos.x <= button.bottom.x && pos.y >= button.top.y && pos.y <= button.bottom.y)
+    if (IsMouseButtonDown(MOUSE_BUTTON_LEFT) && pos.x >= button.top.x && pos.x <= button.bottom.x && pos.y >= button.top.y && pos.y <= button.bottom.y)
+    {
+        while (IsMouseButtonDown(MOUSE_BUTTON_LEFT))
+        {
+            BeginDrawing();
+            EndDrawing();
+        }
+
         return 1;
+    }
 
     return 0;
 }
 
 state_t checkMenuButtonPress(menuButtonsCoordinates_t menuButtons)
 {
-    if (pressDetection(menuButtons.game)) return GAME_STATE;
+    if (pressDetection(menuButtons.game)) return ASKING_STATE;
     if (pressDetection(menuButtons.save)) return SAVE_STATE;
     if (pressDetection(menuButtons.load)) return LOAD_STATE;
     if (pressDetection(menuButtons.quit)) return QUIT_STATE;
@@ -46,7 +54,7 @@ state_t checkMenuButtonPress(menuButtonsCoordinates_t menuButtons)
     return MENU_STATE;
 }
 
-int inputBox(char inputData[MAX_CHARS], int *letterCount) //TODO - delete inputData[MAX_CHARS]
+int inputBox(char inputData[MAX_CHARS], int *letterCount)
 {
     Rectangle textBox = {.x = SCREEN_WIDTH / 2 - 400, .y = SCREEN_HEIGHT / 2 - 150, .width = 800, .height = 50};
 
@@ -58,7 +66,7 @@ int inputBox(char inputData[MAX_CHARS], int *letterCount) //TODO - delete inputD
 
         while (key > 0)
         {
-            if (key >= 32 && key <= 125 && *letterCount < MAX_CHARS)
+            if (key >= 32 && key <= 125 && *letterCount < MAX_CHARS - 1)
             {
                 inputData[*letterCount]     = (char)key;
                 inputData[*letterCount + 1] = '\0';
@@ -84,7 +92,22 @@ int inputBox(char inputData[MAX_CHARS], int *letterCount) //TODO - delete inputD
 
     DrawRectangleRec(textBox, GRAY);
 
-    DrawText(inputData, (int)textBox.x + 5, (int)textBox.y + 5, 40, RAYWHITE);
+    int i = 0;
+    while (MeasureText(&inputData[i], 40) > (int)textBox.width) i++;
+
+    DrawText(&inputData[i], (int)textBox.x + 5, (int)textBox.y + 5, 40, RAYWHITE);
 
     return 0;
+}
+
+void cleanData(char *string, int *number)
+{
+    for (int i = 0; i < *number; i++)
+    {
+        string[i] = '\0';
+    }
+
+    *number = 0;
+
+    return;
 }
