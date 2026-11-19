@@ -141,6 +141,11 @@ void nodePrint(treeNode_t *root, FILE *filePointer)
 
 void treeDump(treeNode_t *node)
 {
+    if (node == NULL)
+    {
+        return;
+    }
+
     time_t timeInSeconds = time(NULL);
 
     tm *parsedTime = localtime(&timeInSeconds);
